@@ -48,6 +48,15 @@
             fetchUserImage(user.id, user.imgId);
         });
     </script>
+
+    <style>
+        /* Ajuste o tamanho do ícone do konect.gg para que seja igual aos outros ícones */
+        .konect-icon {
+            width: 29px; /* Tamanho desejado para o ícone */
+            height: 29px;
+            object-fit: contain; /* Garante que a imagem se ajuste corretamente */
+        }
+    </style>
 </head>
 
 <body>
@@ -84,6 +93,12 @@
                     <div class="badge" style="background-image: url('images/1895-subscriber-nitro-animated.gif');" data-tooltip="Assinante desde 30 de set. de 2022"></div>
                     <!-- Nova badge -->
                     <div class="badge" style="background-image: url('images/booster.png');" data-tooltip="Impulsionando o servidor desde 30 de set. de 2022"></div>
+                </div>
+                <div class="social-buttons">
+                    <!-- Link para o konect.gg com a imagem -->
+                    <a href="https://konect.gg/profile/jaumbebel" target="_blank" class="social-button">
+                        <img src="https://raw.githubusercontent.com/fye2/jaum/refs/heads/main/Konect_Avatar_Yellow2x-removebg-preview%20(1).png" alt="Konect.gg" class="social-icon konect-icon">
+                    </a>
                 </div>
             </div>
         </div>
