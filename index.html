@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,8 +16,8 @@
     <script>
         function audioPlay() {
             var audio = document.getElementById("audio");
-            audio.volume = 1.0;
-            audio.currentTime = 138;
+            audio.volume = 0.6;
+            audio.currentTime = 151;
             audio.play();
         }
 
@@ -47,6 +48,29 @@
         userIds.forEach(user => {
             fetchUserImage(user.id, user.imgId);
         });
+
+        // Função para atualizar o contador de visitantes
+        function updateVisitorCount() {
+            const visitorRef = firebase.database().ref('visitorCount');
+            visitorRef.transaction(currentValue => {
+                return (currentValue || 0) + 1; // Incrementa o valor atual
+            });
+        }
+
+        // Função para exibir o contador de visitantes
+        function displayVisitorCount() {
+            const visitorRef = firebase.database().ref('visitorCount');
+            visitorRef.on('value', snapshot => {
+                const visitorCount = snapshot.val();
+                document.getElementById('visitor-count').innerText = visitorCount || 0;
+            });
+        }
+
+        // Executar as funções ao carregar a página
+        window.onload = function () {
+            updateVisitorCount(); // Incrementa o contador ao carregar a página
+            displayVisitorCount(); // Exibe o contador atualizado
+        };
     </script>
 
     <style>
@@ -55,6 +79,56 @@
             width: 29px; /* Tamanho desejado para o ícone */
             height: 29px;
             object-fit: contain; /* Garante que a imagem se ajuste corretamente */
+        }
+
+        /* Estilo para o contador de visitantes */
+        .visitor-profile {
+            position: fixed;
+            top: 5px; /* Ajustando para mais para cima */
+            right: 10px;
+            z-index: 1000;
+            will-change: transform;
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1);
+            display: none; /* Inicialmente escondido */
+            text-align: center;
+            opacity: 0.8; /* Tornando mais transparente */
+            width: 190px; /* Reduzindo a largura */
+            padding: 0px; /* Ajustando o espaçamento */
+        }
+
+        .visitor-card {
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3)); /* Degradê mais suave */
+            border-radius: 10px;
+            padding: 5px;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .visitor-nick {
+            font-size: 14px; /* Ajustando o tamanho da fonte */
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .visitor-count {
+            font-size: 12px; /* Ajustando o tamanho do contador */
+            margin: 5px 0;
+        }
+
+        /* Estilo adicional para o texto abaixo do emoji */
+        .overlayhover {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        .additional-text {
+            margin-top: 5px; /* Um pouco de espaçamento entre o emoji e o texto */
+            font-size: 18px;
+            color: white;
         }
     </style>
 </head>
@@ -69,8 +143,11 @@
         <label for="overlay-toggle" onclick="audioPlay();">
             <span class="overlayno-hover hover" style="font-family: monospace; font-size: 0.6em;">click</span>
             <span class="overlayhover hover" style="font-family: monospace; font-size: 0.6em;">
-                <!-- Substitua a imagem PNG por um GIF -->
-                <img src="images/start-gif.gif" alt="image/gif"> <!-- Aqui foi alterado -->
+                <img src="images/start-gif.gif" alt="image/gif">
+                <!-- Texto abaixo do emoji -->
+                <span class="additional-text">
+                    ego não é o foco e a saudade mata
+                </span>
             </span>
         </label>
     </div>
@@ -81,7 +158,7 @@
     </video>
 
     <div class="all" style="text-align: center;">
-        <!-- Primeiro perfil (Centralizado) -->
+        <!-- Primeiro perfil -->
         <div class="discord-profile" style="will-change: transform; transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1); display: inline-block;">
             <div class="profile animate__animated animate__fadeInUp animate__fast">
                 <div class="pfp">
@@ -90,22 +167,29 @@
                 <div class="nickr" id="nick-pqj">Jaum</div>
                 <div class="nick subnick">162536712547612124</div>
                 <div class="badges">
-                    <div class="badge" style="background-image: url('images/1895-subscriber-nitro-animated.gif');" data-tooltip="Assinante desde 30 de set. de 2022"></div>
-                    <!-- Nova badge -->
-                    <div class="badge" style="background-image: url('images/booster.png');" data-tooltip="Impulsionando o servidor desde 30 de set. de 2022"></div>
                 </div>
                 <div class="social-buttons">
-                    <!-- Link para o konect.gg com a imagem -->
-                    <a href="https://konect.gg/jaumbebel" target="_blank" class="social-button">
-                        <img src="https://raw.githubusercontent.com/fye2/jaum/refs/heads/main/Konect_Avatar_Yellow2x-removebg-preview%20(1).png" alt="Konect.gg" class="social-icon konect-icon">
                     </a>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Contador de Visitantes -->
+    <div class="visitor-profile animate__animated animate__fadeInUp">
+        <div class="visitor-card" id="visitor-count-card">
+            <div class="visitor-nick">Contador de Visitantes</div>
+            <div class="visitor-count" id="visitor-count">999</div>
+        </div>
+    </div>
+
     <script>
-        VanillaTilt.init(document.querySelectorAll('.discord-profile'), {
+        // Mostrar contador de visitantes após clique para entrar
+        document.getElementById('overlay-toggle').addEventListener('change', function() {
+            document.querySelector('.visitor-profile').style.display = 'block';
+        });
+
+        VanillaTilt.init(document.querySelectorAll('.discord-profile, .visitor-profile'), {
             glare: true,
             maxGlare: 0.3,
             gyroscope: false,
