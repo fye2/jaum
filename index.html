@@ -21,43 +21,23 @@
             audio.play();
         }
 
-        // Função para buscar a imagem de um usuário específico
-        function fetchUserImage(userId, imgElementId) {
-            fetch(`https://discord-web-api.glitch.me/discord/user/${userId}`, {
-                method: "GET",
-                mode: "cors"
-            }).then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Network response was not ok.');
-            }).then(data => {
-                // Atualiza a imagem do usuário no elemento correspondente
-                document.getElementById(imgElementId).src = data.url;
-            }).catch(error => {
-                console.error('There has been a problem with your fetch operation:', error);
-            });
+        // 
+        function updateUserImage(imgElementId) {
+            const imgPath = `images/jaum.png`;  // 
+
+            // 
+            document.getElementById(imgElementId).src = imgPath;
         }
 
-        // IDs dos usuários que você deseja buscar
-        const userIds = [
-            { id: "781169706244636682", imgId: "primeirobreck" }  // Exemplo do primeiro usuário
-        ];
-
-        // Chamadas para buscar as imagens
-        userIds.forEach(user => {
-            fetchUserImage(user.id, user.imgId);
-        });
-
-        // Função para atualizar o contador de visitantes
+        // 
         function updateVisitorCount() {
             const visitorRef = firebase.database().ref('visitorCount');
             visitorRef.transaction(currentValue => {
-                return (currentValue || 0) + 1; // Incrementa o valor atual
+                return (currentValue || 0) + 1; // 
             });
         }
 
-        // Função para exibir o contador de visitantes
+        // 
         function displayVisitorCount() {
             const visitorRef = firebase.database().ref('visitorCount');
             visitorRef.on('value', snapshot => {
@@ -66,9 +46,10 @@
             });
         }
 
-        // Executar as funções ao carregar a página
+        // 
         window.onload = function () {
-            updateVisitorCount(); // Incrementa o contador ao carregar a página
+            updateUserImage('primeirobreck');  // Atualiza a imagem ao carregar
+            updateVisitorCount();  // Incrementa o contador ao carregar a página
             displayVisitorCount(); // Exibe o contador atualizado
         };
     </script>
