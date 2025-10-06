@@ -21,11 +21,6 @@
             audio.play();
         }
 
-        function updateUserImage(imgElementId) {
-            const imgPath = `images/jaum.png`;  // Imagem local para o primeiro card
-            document.getElementById(imgElementId).src = imgPath;
-        }
-
         function updateVisitorCount() {
             const visitorRef = firebase.database().ref('visitorCount');
             visitorRef.transaction(currentValue => {
@@ -42,13 +37,12 @@
         }
 
         window.onload = function () {
-            updateUserImage('primeirobreck');  // Atualiza a imagem local ao carregar
             updateVisitorCount();
             displayVisitorCount();
-            carregarPerfil("1304069075571572787"); // Chama o bot para atualizar nome do primeiro card
+            carregarPerfil("1304069075571572787"); // Carrega avatar e nome da API
         };
 
-        // Função do bot adaptada para atualizar só o nome do primeiro card
+        // Função do bot para carregar avatar e nome do usuário da API
         async function carregarPerfil(userId) {
             try {
                 const response = await fetch(`https://testeee-rtqe.onrender.com/api/user/${userId}`);
@@ -56,17 +50,12 @@
 
                 const data = await response.json();
 
-                // Atualiza o primeiro card (nome)
+                // Atualiza o avatar e o nome no primeiro card
+                const profileImg1 = document.getElementById("primeirobreck");
                 const nickr1 = document.querySelector(".discord-profile .nickr");
-                if (nickr1) nickr1.textContent = data.displayName || data.username;
 
-                // Se quiser usar o segundo card depois, descomente abaixo:
-                /*
-                const profileImg2 = document.querySelector(".discord-profile-small .profile-img-small");
-                const profileName2 = document.querySelector(".discord-profile-small .profile-name");
-                if (profileImg2) profileImg2.src = data.avatarURL;
-                if (profileName2) profileName2.textContent = data.displayName || data.username;
-                */
+                if (profileImg1) profileImg1.src = data.avatarURL;
+                if (nickr1) nickr1.textContent = data.displayName || data.username;
 
             } catch (error) {
                 console.error("Erro ao buscar dados do usuário:", error);
