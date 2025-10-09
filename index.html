@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -10,61 +11,6 @@
   <script src="js/point.js"></script>
   <script src="js/blocker.js"></script>
   <script src="js/x.js"></script>
-  <script src="js/main.js"></script>
-
-  <script>
-    function audioPlay() {
-      var audio = document.getElementById("audio");
-      audio.volume = 0.6;
-      audio.currentTime = 151;
-      audio.play();
-    }
-
-    function updateVisitorCount() {
-      const visitorRef = firebase.database().ref('visitorCount');
-      visitorRef.transaction(currentValue => {
-        return (currentValue || 0) + 1;
-      });
-    }
-
-    function displayVisitorCount() {
-      const visitorRef = firebase.database().ref('visitorCount');
-      visitorRef.on('value', snapshot => {
-        const visitorCount = snapshot.val();
-        document.getElementById('visitor-count').innerText = visitorCount || 0;
-      });
-    }
-
-    window.onload = function () {
-      updateVisitorCount();
-      displayVisitorCount();
-      fetchAvatar(); // 🔹 Novo método de carregar o avatar
-    };
-
-    // 🔹 Novo método para buscar o avatar
-    const userId = "781169706244636682";
-
-    async function fetchAvatar() {
-      try {
-        const res = await fetch("https://testeee-rtqe.onrender.com/api/user/" + userId);
-        const data = await res.json();
-
-        if (data.error) {
-          console.error("Erro ao carregar avatar");
-          document.getElementById("discord-avatar-small").src =
-            "https://cdn.discordapp.com/embed/avatars/0.png";
-          return;
-        }
-
-        const avatarURL = data.avatarURL || `https://cdn.discordapp.com/embed/avatars/0.png`;
-        document.getElementById("discord-avatar-small").src = avatarURL;
-      } catch (error) {
-        console.error("Erro ao buscar dados do usuário:", error);
-        document.getElementById("discord-avatar-small").src =
-          "https://cdn.discordapp.com/embed/avatars/0.png";
-      }
-    }
-  </script>
 
   <style>
     .konect-icon {
@@ -149,8 +95,8 @@
     <div class="discord-profile" style="will-change: transform; transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1); display: inline-block;">
       <div class="profile animate__animated animate__fadeInUp animate__fast">
         <div class="pfp">
-          <!-- 🔹 Avatar carregado com novo método -->
-          <img class="profile-img" id="discord-avatar-small" src="#" />
+          <!-- Avatar carregado via API -->
+          <img class="profile-img" id="primeirobreck" data-user-id="1304069075571572787" src="#" />
         </div>
         <div class="nickr" id="nick-pqj">Jaum</div>
         <div class="nick subnick">1533a</div>
@@ -172,8 +118,62 @@
     </div>
   </div>
 
+  <!-- Scripts finais -->
   <script>
-    document.getElementById('overlay-toggle').addEventListener('change', function() {
+    function audioPlay() {
+      var audio = document.getElementById("audio");
+      audio.volume = 0.6;
+      audio.currentTime = 151;
+      audio.play();
+    }
+
+    function updateVisitorCount() {
+      const visitorRef = firebase.database().ref('visitorCount');
+      visitorRef.transaction(currentValue => {
+        return (currentValue || 0) + 1;
+      });
+    }
+
+    function displayVisitorCount() {
+      const visitorRef = firebase.database().ref('visitorCount');
+      visitorRef.on('value', snapshot => {
+        const visitorCount = snapshot.val();
+        document.getElementById('visitor-count').innerText = visitorCount || 0;
+      });
+    }
+
+    const userId = "1304069075571572787";
+
+    async function fetchAvatar() {
+      try {
+        const res = await fetch("https://testeee-rtqe.onrender.com/api/user/" + userId);
+        const data = await res.json();
+
+        if (data.error) {
+          console.error("Erro ao carregar avatar");
+          document.getElementById("primeirobreck").src =
+            "https://cdn.discordapp.com/embed/avatars/0.png";
+          return;
+        }
+
+        const avatarURL = data.avatarURL || `https://cdn.discordapp.com/embed/avatars/0.png`;
+        document.getElementById("primeirobreck").src = avatarURL;
+      } catch (error) {
+        console.error("Erro ao buscar dados do usuário:", error);
+        document.getElementById("primeirobreck").src =
+          "https://cdn.discordapp.com/embed/avatars/0.png";
+      }
+    }
+
+    window.onload = function () {
+      updateVisitorCount();
+      displayVisitorCount();
+      fetchAvatar();
+    };
+  </script>
+
+  <script>
+    document.getElementById('overlay-toggle').addEventListener('change', function () {
       document.querySelector('.visitor-profile').style.display = 'block';
     });
 
@@ -186,6 +186,3 @@
   </script>
 </body>
 </html>
-
-
-
