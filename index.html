@@ -1,51 +1,121 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Jaum</title>
-  <link rel="icon" href="images/1090793852694175744.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title class="blinking-title">Jaum</title>
+  <link rel="icon" href="images/1090793852694175744.png" type="image/png" />
   <link rel="stylesheet" href="css/all.min.css" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/main.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+  <script src="js/point.js"></script>
+  <script src="js/blocker.js"></script>
+  <script src="js/x.js"></script>
 
   <script>
     function audioPlay() {
-      const audio = document.getElementById("audio");
-      audio.volume = 0.5;
-      audio.currentTime = 0;
+      var audio = document.getElementById("audio");
+      audio.volume = 0.6;
+      audio.currentTime = 151;
       audio.play();
     }
 
-    // Puxa imagem da API para o perfil
-    async function carregarPerfil(userId) {
-      try {
-        const res = await fetch("https://testeee-rtqe.onrender.com/api/user/" + userId);
-        const data = await res.json();
+    function updateVisitorCount() {
+      const visitorRef = firebase.database().ref('visitorCount');
+      visitorRef.transaction(currentValue => {
+        return (currentValue || 0) + 1;
+      });
+    }
 
-        if (data.error) {
-          console.error("Erro ao carregar dados.");
-          return;
-        }
-
-        // Atualiza avatar e nome do perfil
-        const avatar = document.getElementById("perfil-avatar");
-        if (avatar) avatar.src = data.avatarURL;
-
-        const nome = document.getElementById("perfil-nome");
-        if (nome) nome.textContent = data.displayName || data.username;
-
-      } catch (error) {
-        console.error("Erro na API:", error);
-      }
+    function displayVisitorCount() {
+      const visitorRef = firebase.database().ref('visitorCount');
+      visitorRef.on('value', snapshot => {
+        const visitorCount = snapshot.val();
+        document.getElementById('visitor-count').innerText = visitorCount || 0;
+      });
     }
 
     window.onload = function () {
-      carregarPerfil("781169706244636682"); // Seu ID da API
+      updateVisitorCount();
+      displayVisitorCount();
+      carregarAvatar("1304069075571572787"); // 🔹 Chama apenas o carregamento do avatar
     };
+
+    // 🔹 Função para carregar apenas o avatar do usuário via API
+    async function carregarAvatar(userId) {
+      try {
+        const response = await fetch(`https://testeee-rtqe.onrender.com/api/user/${userId}`);
+        if (!response.ok) throw new Error("Erro ao obter avatar do usuário");
+
+        const data = await response.json();
+
+        // Atualiza apenas a imagem de perfil
+        const profileImg = document.getElementById("primeirobreck");
+        if (profileImg && data.avatarURL) {
+          profileImg.src = data.avatarURL;
+        }
+      } catch (error) {
+        console.error("Erro ao buscar avatar:", error);
+      }
+    }
   </script>
+
+  <style>
+    .konect-icon {
+      width: 29px;
+      height: 29px;
+      object-fit: contain;
+    }
+
+    .visitor-profile {
+      position: fixed;
+      top: 5px;
+      right: 10px;
+      z-index: 1000;
+      will-change: transform;
+      transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1);
+      display: none;
+      text-align: center;
+      opacity: 0.8;
+      width: 190px;
+      padding: 0px;
+    }
+
+    .visitor-card {
+      background: linear-gradient(145deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3));
+      border-radius: 10px;
+      padding: 5px;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .visitor-nick {
+      font-size: 14px;
+      font-weight: bold;
+      margin: 5px 0;
+    }
+
+    .visitor-count {
+      font-size: 12px;
+      margin: 5px 0;
+    }
+
+    .overlayhover {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      width: 100%;
+    }
+
+    .additional-text {
+      margin-top: 5px;
+      font-size: 18px;
+      color: white;
+    }
+  </style>
 </head>
+
 <body>
   <audio loop preload="auto" id="audio">
     <source src="media/new.mp3" type="audio/mpeg" />
@@ -56,7 +126,7 @@
     <label for="overlay-toggle" onclick="audioPlay();">
       <span class="overlayno-hover hover" style="font-family: monospace; font-size: 0.6em;">click</span>
       <span class="overlayhover hover" style="font-family: monospace; font-size: 0.6em;">
-        <img src="images/start-gif.gif" alt="gif" />
+        <img src="images/start-gif.gif" alt="image/gif" />
         <span class="additional-text">ego não é o foco e a saudade mata</span>
       </span>
     </label>
@@ -68,16 +138,16 @@
   </video>
 
   <div class="all" style="text-align: center;">
-    <div class="discord-profile" style="display: inline-block;">
-      <div class="profile">
+    <!-- Primeiro perfil -->
+    <div class="discord-profile" style="will-change: transform; transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1); display: inline-block;">
+      <div class="profile animate__animated animate__fadeInUp animate__fast">
         <div class="pfp">
-          <img class="profile-img" id="perfil-avatar" src="#" alt="Avatar do Jaum" />
+          <!-- 🔹 Avatar carregado dinamicamente via API -->
+          <img class="profile-img" id="primeirobreck" data-user-id="1304069075571572787" src="#" />
         </div>
-        <div class="nickr" id="perfil-nome">Jaum</div>
+        <div class="nickr" id="nick-pqj">Jaum</div>
         <div class="nick subnick">oieamor</div>
-
         <div class="badges"></div>
-
         <div class="social-buttons">
           <a href="https://www.instagram.com/by.jaum/" target="_blank" class="social-button">
             <i class="fab fa-instagram social-icon"></i>
@@ -87,8 +157,20 @@
     </div>
   </div>
 
+  <!-- Contador de Visitantes -->
+  <div class="visitor-profile animate__animated animate__fadeInUp">
+    <div class="visitor-card" id="visitor-count-card">
+      <div class="visitor-nick">Contador de Visitantes</div>
+      <div class="visitor-count" id="visitor-count">5555</div>
+    </div>
+  </div>
+
   <script>
-    VanillaTilt.init(document.querySelectorAll('.discord-profile'), {
+    document.getElementById('overlay-toggle').addEventListener('change', function() {
+      document.querySelector('.visitor-profile').style.display = 'block';
+    });
+
+    VanillaTilt.init(document.querySelectorAll('.discord-profile, .visitor-profile'), {
       glare: true,
       maxGlare: 0.3,
       gyroscope: false,
@@ -97,4 +179,3 @@
   </script>
 </body>
 </html>
-
