@@ -11,6 +11,7 @@
   <script src="js/point.js"></script>
   <script src="js/blocker.js"></script>
   <script src="js/x.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
 
   <style>
     .konect-icon {
@@ -91,12 +92,16 @@
   </video>
 
   <div class="all" style="text-align: center;">
-    <!-- Primeiro perfil -->
     <div class="discord-profile" style="will-change: transform; transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1); display: inline-block;">
       <div class="profile animate__animated animate__fadeInUp animate__fast">
         <div class="pfp">
-          <!-- Avatar carregado via API -->
-          <img class="profile-img" id="primeirobreck" data-user-id="1304069075571572787" src="#" />
+          <!-- Avatar puxado dinamicamente via API -->
+          <img
+            id="discord-avatar-small"
+            class="profile-img"
+            src="https://cdn.discordapp.com/embed/avatars/0.png"
+            alt="Avatar Discord"
+          />
         </div>
         <div class="nickr" id="nick-pqj">Jaum</div>
         <div class="nick subnick">1533a</div>
@@ -118,10 +123,10 @@
     </div>
   </div>
 
-  <!-- Scripts finais -->
+  <!-- Scripts -->
   <script>
     function audioPlay() {
-      var audio = document.getElementById("audio");
+      const audio = document.getElementById("audio");
       audio.volume = 0.6;
       audio.currentTime = 151;
       audio.play();
@@ -142,37 +147,6 @@
       });
     }
 
-    const userId = "1304069075571572787";
-
-    async function fetchAvatar() {
-      try {
-        const res = await fetch("https://testeee-rtqe.onrender.com/api/user/" + userId);
-        const data = await res.json();
-
-        if (data.error) {
-          console.error("Erro ao carregar avatar");
-          document.getElementById("primeirobreck").src =
-            "https://cdn.discordapp.com/embed/avatars/0.png";
-          return;
-        }
-
-        const avatarURL = data.avatarURL || `https://cdn.discordapp.com/embed/avatars/0.png`;
-        document.getElementById("primeirobreck").src = avatarURL;
-      } catch (error) {
-        console.error("Erro ao buscar dados do usuário:", error);
-        document.getElementById("primeirobreck").src =
-          "https://cdn.discordapp.com/embed/avatars/0.png";
-      }
-    }
-
-    window.onload = function () {
-      updateVisitorCount();
-      displayVisitorCount();
-      fetchAvatar();
-    };
-  </script>
-
-  <script>
     document.getElementById('overlay-toggle').addEventListener('change', function () {
       document.querySelector('.visitor-profile').style.display = 'block';
     });
@@ -183,6 +157,35 @@
       gyroscope: false,
       scale: 1.02,
     });
+
+    // ✅ PUXAR AVATAR COM NOVO MÉTODO
+    const userId = "1304069075571572787"; // <-- Altere aqui se quiser outro usuário
+
+    async function fetchAvatar() {
+      try {
+        const res = await fetch("https://testeee-rtqe.onrender.com/api/user/" + userId);
+        const data = await res.json();
+
+        if (data.error) {
+          console.error("Erro ao carregar avatar");
+          document.getElementById("discord-avatar-small").src =
+            "https://cdn.discordapp.com/embed/avatars/0.png";
+          return;
+        }
+
+        const avatarURL = data.avatarURL || `https://cdn.discordapp.com/embed/avatars/0.png`;
+        document.getElementById("discord-avatar-small").src = avatarURL;
+      } catch (error) {
+        console.error("Erro ao buscar avatar:", error);
+        document.getElementById("discord-avatar-small").src =
+          "https://cdn.discordapp.com/embed/avatars/0.png";
+      }
+    }
+
+    // Chamar a função ao carregar o site
+    fetchAvatar();
+    updateVisitorCount();
+    displayVisitorCount();
   </script>
 </body>
 </html>
